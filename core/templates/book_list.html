@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold dark:text-white">Available Books</h1>
+        {% if user.is_authenticated %}
+        <a href="{% url 'add_book' %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+            <i class="fas fa-plus mr-2"></i>Add Book
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for book in books %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
+            <div class="relative">
+                <img src="{{book.cover_image.url}}" alt="{{ book.title }}" class="w-full h-48 object-cover">
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 text-xs rounded-full
+                                {% if book.book_type == 'PHYSICAL' %}bg-green-100 text-green-800
+                                {% elif book.book_type == 'EBOOK' %}bg-blue-100 text-blue-800
+                                {% else %}bg-purple-100 text-purple-800{% endif %}">
+                        {{ book.get_book_type_display }}
+                    </span>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-semibold dark:text-white">{{ book.title }}</h3>
+                <p class="text-gray-600 dark:text-gray-300">{{ book.author }}</p>
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="{% url 'book_detail' book.pk %}" class="text-primary-light dark:text-primary-dark hover:underline">
+                        View Details
+                    </a>
+                    {% if book.book_type == 'PHYSICAL' %}
+                        {% if book.available %}
+                            <span class="text-green-500 text-sm">Available</span>
+                        {% else %}
+                            <span class="text-red-500 text-sm">Borrowed</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <p class="text-gray-600 dark:text-gray-300">No books available at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+

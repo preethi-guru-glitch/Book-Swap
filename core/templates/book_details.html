@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+    <div class="md:flex">
+        <div class="md:w-1/3 p-6">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="w-full rounded-lg shadow">
+            {% if book.added_by %}
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">
+                Added by: {{ book.added_by.username }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="md:w-2/3 p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-2xl font-bold dark:text-white">{{ book.title }}</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">{{ book.author }}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm
+                            {% if book.book_type == 'PHYSICAL' %}bg-green-100 text-green-800
+                            {% elif book.book_type == 'EBOOK' %}bg-blue-100 text-blue-800
+                            {% else %}bg-purple-100 text-purple-800{% endif %}">
+                    {{ book.get_book_type_display }}
+                </span>
+            </div>
+
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold dark:text-white">Description</h2>
+                <p class="mt-2 text-gray-700 dark:text-gray-300">{{ book.description }}</p>
+            </div>
+
+            {% if book.categories.exists %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold dark:text-white">Categories</h2>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    {% for category in book.categories.all %}
+                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs rounded-full">
+                        {{ category.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mt-8">
+                {% if book.book_type == 'EBOOK' or book.book_type == 'ARTICLE' %}
+                    <a href="{{ book.file.url }}"
+                       class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition inline-block"
+                       target="_blank">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                {% elif user.is_authenticated %}
+                    {% if is_borrowed %}
+                        <span class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg inline-block">
+                            <i class="fas fa-check-circle mr-2"></i>You have this book
+                        </span>
+                        <a href="{% url 'profile' %}" class="ml-4 text-blue-500 hover:underline">
+                            View your borrows
+                        </a>
+                    {% elif book.available %}
+                        <a href="{% url 'borrow_book' book.pk %}"
+                           class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition inline-block">
+                            <i class="fas fa-book-reader mr-2"></i>Borrow This Book
+                        </a>
+                    {% else %}
+                        <span class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg inline-block">
+                            Currently unavailable
+                        </span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

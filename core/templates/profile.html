@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Current Borrows</h2>
+        {% if current_borrows %}
+        <div class="space-y-4">
+            {% for borrow in current_borrows %}
+            <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                <h3 class="font-medium text-gray-900 dark:text-white">{{ borrow.book.title }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Due: {{ borrow.return_date|date:"M d, Y" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-600 dark:text-gray-400">No current borrows</p>
+        {% endif %}
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Borrow History</h2>
+        {% if past_borrows %}
+        <div class="space-y-4">
+            {% for borrow in past_borrows %}
+            <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                <h3 class="font-medium text-gray-900 dark:text-white">{{ borrow.book.title }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Borrowed: {{ borrow.borrowed_date|date:"M d, Y" }} |
+                    Returned: {{ borrow.return_date|date:"M d, Y" }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-600 dark:text-gray-400">No borrow history</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

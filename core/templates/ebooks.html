@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .ebook-card:hover .ebook-overlay {
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">E-Books Collection</h1>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for ebook in ebooks %}
+    <div class="ebook-card relative rounded-lg shadow-md overflow-hidden">
+        <img src="{{ ebook.cover_image.url }}" alt="{{ ebook.title }}" class="w-full h-64 object-cover">
+        <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ ebook.title }}</h3>
+            <p class="text-gray-600 dark:text-gray-300">{{ ebook.author }}</p>
+        </div>
+        <div class="ebook-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition-opacity duration-300">
+            <a href="{{ ebook.file.url }}"
+               class="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition"
+               target="_blank">
+                Read Now
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
